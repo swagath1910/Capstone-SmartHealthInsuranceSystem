@@ -1,0 +1,118 @@
+<div class="loading-container" *ngIf="isLoading">
+  <mat-card>
+    <mat-card-content>
+      <p>Loading policy details...</p>
+    </mat-card-content>
+  </mat-card>
+</div>
+
+<div class="policy-detail-container" *ngIf="!isLoading && policy">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>
+        <div class="header-content">
+          <span>Policy Details</span>
+          <mat-chip [ngClass]="getStatusClass(policy.status)">
+            {{policy.status}}
+          </mat-chip>
+        </div>
+      </mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      <div class="detail-section">
+        <h3>Policy Information</h3>
+        <div class="detail-grid">
+          <div class="detail-item">
+            <label>Policy Number:</label>
+            <span class="value">{{policy.policyNumber}}</span>
+          </div>
+          <div class="detail-item">
+            <label>Plan Name:</label>
+            <span class="value">{{policy.planName}}</span>
+          </div>
+          <div class="detail-item">
+            <label>Policy Holder:</label>
+            <span class="value">{{policy.userName}}</span>
+          </div>
+          <div class="detail-item">
+            <label>Premium Paid:</label>
+            <span class="value">₹{{policy.premiumPaid | number:'1.2-2'}}</span>
+          </div>
+        </div>
+      </div>
+
+      <mat-divider></mat-divider>
+
+      <div class="detail-section">
+        <h3>Coverage Details</h3>
+        <div class="detail-grid">
+          <div class="detail-item">
+            <label>Start Date:</label>
+            <span class="value">{{policy.startDate | date:'shortDate'}}</span>
+          </div>
+          <div class="detail-item">
+            <label>End Date:</label>
+            <span class="value">{{policy.endDate | date:'shortDate'}}</span>
+          </div>
+          <div class="detail-item">
+            <label>Coverage Limit:</label>
+            <span class="value">₹{{policy.coverageLimit | number:'1.0-0'}}</span>
+          </div>
+          <div class="detail-item">
+            <label>Remaining Coverage:</label>
+            <div class="coverage-display">
+              <span class="value coverage-amount">₹{{policy.remainingCoverage | number:'1.0-0'}}</span>
+              <mat-progress-bar 
+                mode="determinate" 
+                [value]="getCoveragePercentage()"
+                [color]="getCoverageColor()">
+              </mat-progress-bar>
+              <span class="coverage-percentage">{{getCoveragePercentage() | number:'1.0-0'}}% remaining</span>
+            </div>
+          </div>
+          <div class="detail-item">
+            <label>Auto Renewal:</label>
+            <span class="value">{{policy.autoRenew ? 'Enabled' : 'Disabled'}}</span>
+          </div>
+          <div class="detail-item" *ngIf="policy.renewedOn">
+            <label>Renewed On:</label>
+            <span class="value">{{policy.renewedOn | date:'shortDate'}}</span>
+          </div>
+          <div class="detail-item" *ngIf="policy.lastPremiumPaymentDate">
+            <label>Last Premium Payment:</label>
+            <span class="value">{{policy.lastPremiumPaymentDate | date:'shortDate'}}</span>
+          </div>
+        </div>
+      </div>
+    </mat-card-content>
+
+    <mat-card-actions>
+      <button mat-button (click)="goBack()">
+        <mat-icon>arrow_back</mat-icon>
+        Back
+      </button>
+      <button mat-raised-button color="accent" 
+              *ngIf="canEdit()" 
+              (click)="editPolicy()">
+        <mat-icon>edit</mat-icon>
+        Edit Policy
+      </button>
+      <button mat-raised-button color="primary" 
+              *ngIf="canRenew()" 
+              (click)="renewPolicy()">
+        <mat-icon>autorenew</mat-icon>
+        Renew Policy
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</div>
+
+<div class="error-container" *ngIf="!isLoading && error">
+  <mat-card>
+    <mat-card-content>
+      <p>{{error}}</p>
+      <button mat-raised-button color="primary" (click)="goBack()">Go Back</button>
+    </mat-card-content>
+  </mat-card>
+</div>

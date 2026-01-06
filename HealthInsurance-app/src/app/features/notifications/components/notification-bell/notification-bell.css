@@ -1,0 +1,69 @@
+button {
+  position: relative;
+  transition: transform 0.2s ease;
+}
+
+button:hover {
+  transform: scale(1.1);
+}
+
+button.has-unread mat-icon {
+  animation: bellRing 1s ease-in-out 2;
+}
+
+@keyframes bellRing {
+  0%, 100% { transform: rotate(0deg); }
+  10%, 30% { transform: rotate(-10deg); }
+  20%, 40% { transform: rotate(10deg); }
+  50% { transform: rotate(0deg); }
+}
+
+mat-icon {
+  font-size: 24px;
+  width: 24px;
+  height: 24px;
+  color: white;
+}
+
+/* Badge styling with proper size to show count */
+::ng-deep .mat-badge-content {
+  font-weight: 700 !important;
+  font-size: 11px !important;
+  font-family: 'Roboto', sans-serif !important;
+  background-color: #f44336 !important;
+  color: white !important;
+  width: 20px !important;
+  height: 20px !important;
+  line-height: 20px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 50% !important;
+  min-width: 20px !important;
+}
+
+::ng-deep .mat-badge-medium .mat-badge-content {
+  width: 22px !important;
+  height: 22px !important;
+  line-height: 22px !important;
+  font-size: 12px !important;
+  min-width: 22px !important;
+}
+
+::ng-deep .mat-badge-warn .mat-badge-content {
+  background-color: #f44336 !important;
+}
+
+/* Ensure badge doesn't get cut off */
+::ng-deep .mat-badge-above .mat-badge-content {
+  top: -8px !important;
+}
+
+::ng-deep .mat-badge-after .mat-badge-content {
+  right: -8px !important;
+}
+
+/* Ensure badge is truly hidden when matBadgeHidden is true */
+::ng-deep .mat-badge-hidden .mat-badge-content {
+  display: none !important;
+}

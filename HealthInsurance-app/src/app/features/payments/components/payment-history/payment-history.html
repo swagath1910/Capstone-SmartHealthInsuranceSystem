@@ -1,0 +1,99 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>
+      <mat-icon>history</mat-icon>
+      Payment History
+    </mat-card-title>
+  </mat-card-header>
+  
+  <mat-card-content>
+    <div class="info-banner" *ngIf="payments.length > 0">
+      <mat-icon>info</mat-icon>
+      <span>Your payment history - Premium payments and claim payouts</span>
+    </div>
+
+    <div class="table-container" *ngIf="payments.length > 0">
+      <table mat-table [dataSource]="payments" class="payment-history-table">
+        <ng-container matColumnDef="paymentReference">
+          <th mat-header-cell *matHeaderCellDef>Reference #</th>
+          <td mat-cell *matCellDef="let payment">
+            <span class="reference-number">{{payment.paymentReference}}</span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="referenceNumber">
+          <th mat-header-cell *matHeaderCellDef>Policy/Claim</th>
+          <td mat-cell *matCellDef="let payment">
+            <div class="reference-info">
+              <mat-icon>{{getPaymentIcon(payment)}}</mat-icon>
+              <span>{{getReferenceNumber(payment)}}</span>
+            </div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="amount">
+          <th mat-header-cell *matHeaderCellDef>Amount</th>
+          <td mat-cell *matCellDef="let payment" class="amount-cell">
+            {{payment.amount | currency:'INR':'symbol':'1.0-0'}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="paymentType">
+          <th mat-header-cell *matHeaderCellDef>Type</th>
+          <td mat-cell *matCellDef="let payment">
+            <mat-chip>
+              {{getPaymentType(payment)}}
+            </mat-chip>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="paymentMethod">
+          <th mat-header-cell *matHeaderCellDef>Method</th>
+          <td mat-cell *matCellDef="let payment">
+            <div class="payment-method">
+              <mat-icon>{{getPaymentMethodIcon(payment.paymentMethod)}}</mat-icon>
+              {{payment.paymentMethod || 'N/A'}}
+            </div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="paymentDate">
+          <th mat-header-cell *matHeaderCellDef>Payment Date</th>
+          <td mat-cell *matCellDef="let payment">
+            {{payment.paymentDate | date:'dd/MM/yyyy'}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>Status</th>
+          <td mat-cell *matCellDef="let payment">
+            <mat-chip [ngClass]="getStatusClass(payment.status)">
+              {{getStatusText(payment.status)}}
+            </mat-chip>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="notes">
+          <th mat-header-cell *matHeaderCellDef>Notes</th>
+          <td mat-cell *matCellDef="let payment">
+            {{payment.notes || '-'}}
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+    </div>
+
+    <div class="no-payments" *ngIf="payments.length === 0 && !loading">
+      <mat-icon>receipt_long</mat-icon>
+      <h3>No Payment History</h3>
+      <p>You haven't made any payments yet.</p>
+    </div>
+
+    <div class="loading" *ngIf="loading">
+      <mat-icon>sync</mat-icon>
+      <p>Loading payment history...</p>
+    </div>
+  </mat-card-content>
+</mat-card>

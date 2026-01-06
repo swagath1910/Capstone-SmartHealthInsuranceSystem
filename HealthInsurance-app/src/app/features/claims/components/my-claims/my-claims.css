@@ -1,0 +1,58 @@
+.table-container {
+  overflow-x: auto;
+  margin-top: 16px;
+}
+
+.claims-table {
+  width: 100%;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+mat-card-header {
+  display: flex;
+  align-items: center;
+}
+
+mat-card-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mat-column-status {
+  width: 120px;
+}
+
+.mat-column-claimAmount,
+.mat-column-approvedAmount {
+  text-align: right;
+}
+
+/* Status chip colors */
+.status-submitted {
+  background-color: #ff9800 !important;
+  color: white !important;
+}
+
+.status-in-review {
+  background-color: #2196f3 !important;
+  color: white !important;
+}
+
+.status-approved {
+  background-color: #4caf50 !important;
+  color: white !important;
+}
+
+.status-rejected {
+  background-color: #f44336 !important;
+  color: white !important;
+}
+
+.status-paid {
+  background-color: #9c27b0 !important;
+  color: white !important;
+}

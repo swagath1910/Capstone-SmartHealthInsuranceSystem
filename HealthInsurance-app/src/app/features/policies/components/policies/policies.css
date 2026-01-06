@@ -1,0 +1,49 @@
+
+.filter-section {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 30px;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  align-items: center;
+  flex-wrap: nowrap;
+}
+
+.search-field {
+  flex: 2;
+  min-width: 250px;
+}
+
+.filter-field {
+  flex: 1;
+  min-width: 180px;
+}
+
+.clear-btn {
+  height: 56px;
+  flex-shrink: 0;
+}
+
+.results-info {
+  margin-bottom: 10px;
+  color: #666;
+  font-size: 14px;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40px;
+  color: #666;
+}
+
+.empty-state mat-icon {
+  font-size: 64px;
+  width: 64px;
+  height: 64px;
+  color: #ccc;
+}
+
+th.mat-sort-header-sorted {
+  color: black;
+}

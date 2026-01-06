@@ -1,0 +1,59 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>
+      <mat-icon>payment</mat-icon>
+      Pay Premiums
+    </mat-card-title>
+  </mat-card-header>
+  
+  <mat-card-content>
+    <div class="table-container">
+      <table mat-table [dataSource]="policies" class="payments-table">
+        <ng-container matColumnDef="policyNumber">
+          <th mat-header-cell *matHeaderCellDef>Policy Number</th>
+          <td mat-cell *matCellDef="let policy">{{policy.policyNumber}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="planName">
+          <th mat-header-cell *matHeaderCellDef>Plan</th>
+          <td mat-cell *matCellDef="let policy">{{policy.planName}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="premiumAmount">
+          <th mat-header-cell *matHeaderCellDef>Premium Amount</th>
+          <td mat-cell *matCellDef="let policy">{{policy.premiumPaid | currency:'INR':'symbol':'1.0-0'}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="dueDate">
+          <th mat-header-cell *matHeaderCellDef>Due Date</th>
+          <td mat-cell *matCellDef="let policy">{{getNextDueDate(policy) | date}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>Payment Status</th>
+          <td mat-cell *matCellDef="let policy">
+            <mat-chip [color]="getPaymentStatusColor(policy)">
+              {{getPaymentStatusText(policy)}}
+            </mat-chip>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <td mat-cell *matCellDef="let policy">
+            <button mat-raised-button 
+                    [color]="isPaid(policy) ? 'accent' : 'primary'"
+                    [disabled]="isPaid(policy)"
+                    (click)="payPremium(policy)">
+              <mat-icon>{{isPaid(policy) ? 'check_circle' : 'payment'}}</mat-icon>
+              {{isPaid(policy) ? 'Paid' : 'Pay Now'}}
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+    </div>
+  </mat-card-content>
+</mat-card>

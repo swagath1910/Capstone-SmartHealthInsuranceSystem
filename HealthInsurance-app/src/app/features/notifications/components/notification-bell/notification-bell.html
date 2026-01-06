@@ -1,0 +1,17 @@
+<button 
+  mat-icon-button 
+  (click)="onBellClick()"
+  [matTooltip]="unreadCount > 0 ? unreadCount + ' unread notification' + (unreadCount > 1 ? 's' : '') : 'Notifications'"
+  aria-label="Notifications"
+  [class.has-unread]="unreadCount > 0">
+  <mat-icon 
+    [matBadge]="unreadCount" 
+    [matBadgeHidden]="unreadCount === 0"
+    matBadgeColor="warn"
+    matBadgeSize="medium"
+    matBadgePosition="above after"
+    [color]="unreadCount > 0 ? 'warn' : 'primary'"
+    aria-hidden="false">
+    notifications
+  </mat-icon>
+</button>

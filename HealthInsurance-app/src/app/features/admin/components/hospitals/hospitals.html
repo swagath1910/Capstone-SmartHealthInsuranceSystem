@@ -1,0 +1,106 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>
+      <mat-icon>local_hospital</mat-icon>
+      Hospital Network
+    </mat-card-title>
+    <div class="spacer"></div>
+    <button mat-raised-button color="primary" *ngIf="canManageHospitals()" 
+            (click)="createHospital()">
+      <mat-icon>add</mat-icon>
+      Add Hospital
+    </button>
+  </mat-card-header>
+  
+  <mat-card-content>
+   
+    <div class="filter-section">
+      <mat-form-field appearance="outline" class="search-field">
+        <mat-label>Search Hospitals</mat-label>
+        <input matInput 
+               [(ngModel)]="searchTerm" 
+               (ngModelChange)="applyFilters()"
+               placeholder="Search by hospital name, city, or phone">
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>Filter by Network Status</mat-label>
+        <mat-select [(ngModel)]="selectedNetworkStatus" (ngModelChange)="applyFilters()">
+          <mat-option [value]="''">All Hospitals</mat-option>
+          <mat-option [value]="'network'">Network Provider</mat-option>
+          <mat-option [value]="'non-network'">Non-Network</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <button mat-raised-button (click)="clearFilters()" class="clear-btn">
+        <mat-icon>clear</mat-icon>
+        Clear Filters
+      </button>
+    </div>
+
+    <div class="results-info">
+      Showing {{paginatedHospitals.length}} of {{filteredHospitals.length}} {{hasActiveFilters() ? 'filtered' : ''}} hospitals ({{hospitals.length}} total)
+    </div>
+
+    <div class="table-container">
+      <table mat-table [dataSource]="paginatedHospitals" matSort (matSortChange)="sortData($event)" class="hospitals-table">
+        <ng-container matColumnDef="hospitalName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Hospital Name</th>
+          <td mat-cell *matCellDef="let hospital">{{hospital.hospitalName}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="address">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Address</th>
+          <td mat-cell *matCellDef="let hospital">{{hospital.address}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="city">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>City</th>
+          <td mat-cell *matCellDef="let hospital">{{hospital.city}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="phoneNumber">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Phone</th>
+          <td mat-cell *matCellDef="let hospital">{{hospital.phoneNumber}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="isNetworkProvider">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Network Provider</th>
+          <td mat-cell *matCellDef="let hospital">
+            <mat-chip [color]="hospital.isNetworkProvider ? 'primary' : ''">
+              {{hospital.isNetworkProvider ? 'Yes' : 'No'}}
+            </mat-chip>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <td mat-cell *matCellDef="let hospital">
+            <button mat-icon-button *ngIf="canManageHospitals()" 
+                    (click)="editHospital(hospital)">
+              <mat-icon>edit</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+
+      <div class="empty-state" *ngIf="filteredHospitals.length === 0">
+        <mat-icon>local_hospital</mat-icon>
+        <p>No hospitals found</p>
+      </div>
+    </div>
+
+    <mat-paginator 
+      [length]="filteredHospitals.length"
+      [pageSize]="pageSize"
+      [pageSizeOptions]="[5, 10, 25, 50, 100]"
+      [pageIndex]="pageIndex"
+      (page)="onPageChange($event)"
+      showFirstLastButtons>
+    </mat-paginator>
+  </mat-card-content>
+</mat-card>

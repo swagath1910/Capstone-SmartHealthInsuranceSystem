@@ -1,0 +1,76 @@
+<h2 mat-dialog-title>
+  <mat-icon>payment</mat-icon>
+  {{getDialogTitle()}}
+</h2>
+
+<mat-dialog-content>
+  <div class="payment-summary">
+    <h3>{{dialogType === 'claim' ? 'Claim Payment' : 'Premium Payment'}}</h3>
+    
+    <!-- Premium Payment Details -->
+    <div *ngIf="dialogType === 'premium' && policy">
+      <div class="detail-row">
+        <span class="label">Policy Number:</span>
+        <span class="value">{{policy.policyNumber}}</span>
+      </div>
+      <div class="detail-row">
+        <span class="label">Plan:</span>
+        <span class="value">{{policy.planName}}</span>
+      </div>
+      <div class="detail-row">
+        <span class="label">Payment Amount:</span>
+        <span class="value">₹{{policy.premiumPaid | number:'1.0-0'}}</span>
+      </div>
+    </div>
+    
+    <!-- Claim Payment Details -->
+    <div *ngIf="dialogType === 'claim' && claim">
+      <div class="detail-row">
+        <span class="label">Claim Number:</span>
+        <span class="value">{{claim.claimNumber}}</span>
+      </div>
+      <div class="detail-row">
+        <span class="label">Policy Holder:</span>
+        <span class="value">{{claim.userName}}</span>
+      </div>
+      <div class="detail-row">
+        <span class="label">{{getAmountLabel()}}:</span>
+        <span class="value">₹{{getPaymentAmount() | number:'1.0-0'}}</span>
+      </div>
+    </div>
+  </div>
+
+  <form [formGroup]="paymentForm">
+    <mat-form-field appearance="outline" class="full-width" *ngIf="dialogType === 'premium'">
+      <mat-label>Payment Method</mat-label>
+      <mat-select formControlName="paymentMethod" required>
+        <mat-option *ngFor="let method of getAvailablePaymentMethods()" [value]="method.value">
+          {{method.label}}
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="paymentForm.get('paymentMethod')?.hasError('required')">
+        Payment method is required
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Read-only payment method for claim payments -->
+    <mat-form-field appearance="outline" class="full-width" *ngIf="dialogType === 'claim'">
+      <mat-label>Payment Method</mat-label>
+      <input matInput [value]="'Claim Payout'" readonly>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Notes (Optional)</mat-label>
+      <textarea matInput formControlName="notes" rows="3" maxlength="500"></textarea>
+      <mat-hint>Add any additional notes for this payment</mat-hint>
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Cancel</button>
+  <button mat-raised-button color="primary" (click)="onConfirm()" [disabled]="paymentForm.invalid">
+    <mat-icon>check</mat-icon>
+    {{dialogType === 'claim' ? 'Process Payment' : 'Confirm Payment'}}
+  </button>
+</mat-dialog-actions>

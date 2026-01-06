@@ -1,0 +1,96 @@
+<div class="policy-form-container">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>
+        <mat-icon>{{isEditMode ? 'edit' : 'add'}}</mat-icon>
+        {{isEditMode ? 'Edit Policy' : 'Create New Policy'}}
+      </mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form [formGroup]="policyForm" (ngSubmit)="onSubmit()">
+        <div class="form-row full-width">
+          <mat-form-field appearance="outline">
+            <mat-label>Select Policy Holder</mat-label>
+            <mat-select formControlName="userId" required>
+              <mat-option *ngFor="let holder of policyHolders" [value]="holder.id">
+                {{holder.firstName}} {{holder.lastName}} - {{holder.email}}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="policyForm.get('userId')?.hasError('required')">
+              Policy holder is required
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline">
+            <mat-label>Insurance Plan</mat-label>
+            <mat-select formControlName="planId" required>
+              <mat-option *ngFor="let plan of insurancePlans" [value]="plan.planId">
+                {{plan.planName}} - {{plan.coverageLimit | currency:'INR':'symbol':'1.0-0'}}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="policyForm.get('planId')?.hasError('required')">
+              Insurance plan is required
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Start Date</mat-label>
+            <input matInput [matDatepicker]="startPicker" formControlName="startDate" required>
+            <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+            <mat-datepicker #startPicker></mat-datepicker>
+            <mat-error *ngIf="policyForm.get('startDate')?.hasError('required')">
+              Start date is required
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline">
+            <mat-label>Premium Amount</mat-label>
+            <input matInput type="number" step="0.01" formControlName="premiumPaid" required>
+            <span matPrefix>₹&nbsp;</span>
+            <mat-error *ngIf="policyForm.get('premiumPaid')?.hasError('required')">
+              Premium amount is required
+            </mat-error>
+            <mat-error *ngIf="policyForm.get('premiumPaid')?.hasError('min')">
+              Premium must be greater than 0
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Status</mat-label>
+            <mat-select formControlName="status" required>
+              <mat-option value="1">Active</mat-option>
+              <mat-option value="2">Expired</mat-option>
+              <mat-option value="3">Suspended</mat-option>
+              <mat-option value="4">Cancelled</mat-option>
+            </mat-select>
+            <mat-error *ngIf="policyForm.get('status')?.hasError('required')">
+              Status is required
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-checkbox formControlName="autoRenew">
+            Enable Auto Renewal
+          </mat-checkbox>
+        </div>
+
+        <mat-card-actions>
+          <button mat-button type="button" (click)="goBack()">
+            <mat-icon>cancel</mat-icon>
+            Cancel
+          </button>
+          <button mat-raised-button color="primary" type="submit" [disabled]="!policyForm.valid || isSubmitting">
+            <mat-icon>{{isEditMode ? 'save' : 'add'}}</mat-icon>
+            {{isEditMode ? 'Update' : 'Create'}} Policy
+          </button>
+        </mat-card-actions>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>

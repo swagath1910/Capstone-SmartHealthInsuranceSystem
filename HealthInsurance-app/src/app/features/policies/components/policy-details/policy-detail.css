@@ -1,0 +1,117 @@
+.policy-detail-container {
+  max-width: 900px;
+  margin: 20px auto;
+  padding: 20px;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.detail-section {
+  margin: 20px 0;
+}
+
+.detail-section h3 {
+  font-size: 18px;
+  font-weight: 500;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.detail-item label {
+  font-weight: 500;
+  color: #666;
+  font-size: 14px;
+}
+
+.detail-item .value {
+  font-size: 16px;
+  color: #333;
+}
+
+.coverage-display {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.coverage-amount {
+  font-size: 18px;
+  font-weight: 600;
+  color: #667eea;
+}
+
+mat-progress-bar {
+  height: 8px;
+  border-radius: 4px;
+}
+
+.coverage-percentage {
+  font-size: 12px;
+  color: #666;
+  font-weight: 500;
+}
+
+mat-divider {
+  margin: 20px 0;
+}
+
+mat-card-actions {
+  display: flex;
+  justify-content: space-between;
+  padding: 16px;
+  gap: 10px;
+}
+
+.status-active {
+  background-color: #4caf50 !important;
+  color: white !important;
+}
+
+.status-expired {
+  background-color: #ff9800 !important;
+  color: white !important;
+}
+
+.status-suspended {
+  background-color: #9e9e9e !important;
+  color: white !important;
+}
+
+.status-cancelled {
+  background-color: #f44336 !important;
+  color: white !important;
+}
+
+.status-pending {
+  background-color: #2196f3 !important;
+  color: white !important;
+}
+
+.loading-container,
+.error-container {
+  max-width: 600px;
+  margin: 20px auto;
+  text-align: center;
+}
+
+.error-container mat-card-content p {
+  color: #f44336;
+  margin-bottom: 20px;
+}

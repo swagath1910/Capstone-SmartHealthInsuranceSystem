@@ -1,0 +1,244 @@
+.reports-container {
+  padding: 16px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Modern Enterprise Chart Titles */
+.chart-title {
+  font-size: 18px !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.02em;
+  margin: 0 !important;
+  padding: 0 !important;
+  line-height: 1.2;
+}
+
+/* Uniform Color for All Chart Titles */
+.policy-card .chart-title,
+.claims-card .chart-title,
+.premium-card .chart-title,
+.hospital-card .chart-title,
+.analysis-card .chart-title {
+  color: #667eea;
+  border-left: 4px solid #667eea;
+  padding-left: 12px !important;
+}
+
+/* Card Header Styling */
+mat-card-header {
+  padding: 16px 16px 8px 16px !important;
+  margin-bottom: 0 !important;
+}
+
+/* Clean Card Styling */
+.chart-card, .table-card {
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  border: 1px solid #f0f0f0;
+  transition: box-shadow 0.2s ease;
+}
+
+.chart-card:hover, .table-card:hover {
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+}
+
+.page-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 24px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 24px;
+}
+
+.page-title mat-icon {
+  font-size: 28px;
+  width: 28px;
+  height: 28px;
+  color: #667eea;
+}
+
+.loading-spinner {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 60px;
+  gap: 16px;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 16px;
+  grid-auto-rows: min-content;
+  align-items: start;
+}
+
+.chart-card {
+  min-height: 300px;
+  max-height: 400px;
+  max-width: 100%;
+  flex: 1 1 300px;
+  display: flex;
+  flex-direction: column;
+}
+
+.chart-card mat-card-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.chart-card.wide {
+  grid-column: span 2;
+  max-width: none;
+  max-height: none;
+}
+
+.table-card {
+  min-height: 300px;
+}
+
+.table-card.wide {
+  grid-column: span 2;
+}
+
+.compact-chart {
+  height: 250px;
+  width: 100%;
+  max-width: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.compact-chart canvas {
+  max-width: 100% !important;
+  max-height: 100% !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.table-container {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.compact-table {
+  width: 100%;
+  font-size: 12px;
+}
+
+.compact-table th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+  color: #495057;
+  padding: 8px 12px;
+  font-size: 11px;
+}
+
+.compact-table td {
+  padding: 8px 12px;
+  font-size: 11px;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.high-value {
+  font-weight: 600;
+  color: #dc3545;
+}
+
+.status-badge {
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.status-approved {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.status-pending {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.status-rejected {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.status-paid {
+  background-color: #d1ecf1;
+  color: #0c5460;
+}
+
+.no-data {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  color: #6c757d;
+}
+
+.no-data mat-icon {
+  font-size: 32px;
+  width: 32px;
+  height: 32px;
+  color: #ccc;
+  margin-bottom: 12px;
+}
+
+@media (max-width: 768px) {
+  .reports-container {
+    padding: 12px;
+  }
+
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .chart-card.wide,
+  .stats-card.wide,
+  .table-card.wide {
+    grid-column: span 1;
+  }
+
+  .compact-chart {
+    height: 180px;
+  }
+
+  .table-container {
+    max-height: 200px;
+  }
+
+  .compact-table {
+    font-size: 10px;
+  }
+
+  .compact-table th,
+  .compact-table td {
+    padding: 6px 8px;
+    font-size: 10px;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .stat-value {
+    font-size: 18px;
+  }
+
+  .page-title {
+    font-size: 20px;
+  }
+}

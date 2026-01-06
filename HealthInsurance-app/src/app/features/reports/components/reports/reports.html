@@ -1,0 +1,142 @@
+<div class="reports-container">
+  <h2 class="page-title">
+    <mat-icon>assessment</mat-icon>
+    Reports & Analytics Dashboard
+  </h2>
+
+  <div *ngIf="isLoading" class="loading-spinner">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>Loading reports...</p>
+  </div>
+
+  <div *ngIf="!isLoading" class="dashboard-grid">
+    <!-- Policy Distribution - Chart Primary -->
+    <mat-card class="chart-card policy-card">
+      <mat-card-header>
+        <mat-card-title class="chart-title">
+          Policy Distribution
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="compact-chart">
+          <canvas baseChart
+            [data]="policyChartData"
+            [type]="policyChartType"
+            [options]="chartOptions">
+          </canvas>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Claims by Status - Chart Primary -->
+    <mat-card class="chart-card claims-card">
+      <mat-card-header>
+        <mat-card-title class="chart-title">
+          Claims by Status
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="compact-chart">
+          <canvas baseChart
+            [data]="claimsChartData"
+            [type]="claimsChartType"
+            [options]="chartOptions">
+          </canvas>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Premium vs Payout - Chart Primary -->
+    <mat-card class="chart-card premium-card">
+      <mat-card-header>
+        <mat-card-title class="chart-title">
+          Premium vs Payout Trend
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="compact-chart">
+          <canvas baseChart
+            [data]="premiumChartData"
+            [type]="premiumChartType"
+            [options]="premiumChartOptions">
+          </canvas>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Top Hospitals - Chart Primary -->
+    <mat-card class="chart-card hospital-card">
+      <mat-card-header>
+        <mat-card-title class="chart-title">
+          Top Hospitals
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="compact-chart">
+          <canvas baseChart
+            [data]="hospitalChartData"
+            [type]="hospitalChartType"
+            [options]="chartOptions">
+          </canvas>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- High-Value Claims - Table Primary -->
+    <mat-card class="table-card analysis-card wide">
+      <mat-card-header>
+        <mat-card-title class="chart-title">
+          High-Value Claims Analysis
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div *ngIf="highValueClaimsData.length > 0" class="table-container">
+          <table mat-table [dataSource]="highValueClaimsData" class="compact-table">
+            <ng-container matColumnDef="claimId">
+              <th mat-header-cell *matHeaderCellDef>ID</th>
+              <td mat-cell *matCellDef="let row">{{row.claimId}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="patientName">
+              <th mat-header-cell *matHeaderCellDef>Patient</th>
+              <td mat-cell *matCellDef="let row">{{row.patientName}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="hospitalName">
+              <th mat-header-cell *matHeaderCellDef>Hospital</th>
+              <td mat-cell *matCellDef="let row">{{row.hospitalName}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="claimAmount">
+              <th mat-header-cell *matHeaderCellDef>Amount</th>
+              <td mat-cell *matCellDef="let row" class="high-value">
+                {{row.claimAmount | currency:'INR':'symbol':'1.0-0'}}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="status">
+              <th mat-header-cell *matHeaderCellDef>Status</th>
+              <td mat-cell *matCellDef="let row">
+                <span class="status-badge" [class]="'status-' + row.status.toLowerCase()">
+                  {{row.status}}
+                </span>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="processingDays">
+              <th mat-header-cell *matHeaderCellDef>Days</th>
+              <td mat-cell *matCellDef="let row">{{row.processingDays}}</td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="compactHighValueColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: compactHighValueColumns;"></tr>
+          </table>
+        </div>
+        <div *ngIf="highValueClaimsData.length === 0" class="no-data">
+          <mat-icon>info</mat-icon>
+          <p>No high-value claims found</p>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

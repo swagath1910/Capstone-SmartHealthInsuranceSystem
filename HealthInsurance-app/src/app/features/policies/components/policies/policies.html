@@ -1,0 +1,157 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>
+      <mat-icon>policy</mat-icon>
+      {{isAdmin() || isAgent() ? 'All Policies' : 'My Policies'}}
+    </mat-card-title>
+    <div class="spacer"></div>
+    <button mat-raised-button color="primary" *ngIf="canCreatePolicy()" 
+            (click)="createPolicy()">
+      <mat-icon>add</mat-icon>
+      New Policy
+    </button>
+  </mat-card-header>
+  
+  <mat-card-content>
+    <!-- Search and Filter Section - Only for Admin/Agent -->
+    <div class="filter-section" *ngIf="isAdmin() || isAgent()">
+      <mat-form-field appearance="outline" class="search-field">
+        <mat-label>Search Policies</mat-label>
+        <input matInput 
+               [(ngModel)]="searchTerm" 
+               (ngModelChange)="applyFilters()"
+               placeholder="Search by policy number, holder, or plan">
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>Filter by Status</mat-label>
+        <mat-select [(ngModel)]="selectedStatus" (ngModelChange)="applyFilters()">
+          <mat-option [value]="''">All Status</mat-option>
+          <mat-option [value]="PolicyStatus.Active">Active</mat-option>
+          <mat-option [value]="PolicyStatus.Expired">Expired</mat-option>
+          <mat-option [value]="PolicyStatus.Suspended">Suspended</mat-option>
+          <mat-option [value]="PolicyStatus.Cancelled">Cancelled</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>Filter by Auto-Renew</mat-label>
+        <mat-select [(ngModel)]="selectedAutoRenew" (ngModelChange)="applyFilters()">
+          <mat-option [value]="''">All</mat-option>
+          <mat-option [value]="'yes'">Auto-Renew Enabled</mat-option>
+          <mat-option [value]="'no'">Auto-Renew Disabled</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <button mat-raised-button (click)="clearFilters()" class="clear-btn">
+        <mat-icon>clear</mat-icon>
+        Clear Filters
+      </button>
+    </div>
+
+    <div class="results-info" *ngIf="isAdmin() || isAgent()">
+      Showing {{paginatedPolicies.length}} of {{filteredPolicies.length}} {{hasActiveFilters() ? 'filtered' : ''}} policies ({{policies.length}} total)
+    </div>
+
+    <div class="table-container">
+      <table mat-table [dataSource]="isAdmin() || isAgent() ? paginatedPolicies : policies" matSort (matSortChange)="sortData($event)" class="policies-table">
+        <ng-container matColumnDef="policyNumber">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Policy Number</th>
+          <td mat-cell *matCellDef="let policy">{{policy.policyNumber}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="userName" *ngIf="showUserColumn()">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Policy Holder</th>
+          <td mat-cell *matCellDef="let policy">{{policy.userName}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="planName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Plan</th>
+          <td mat-cell *matCellDef="let policy">{{policy.planName}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="startDate">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Start Date</th>
+          <td mat-cell *matCellDef="let policy">{{policy.startDate | date}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="endDate">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>End Date</th>
+          <td mat-cell *matCellDef="let policy">{{policy.endDate | date}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="premiumPaid">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Premium</th>
+          <td mat-cell *matCellDef="let policy">{{policy.premiumPaid | currency:'INR':'symbol':'1.0-0'}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="remainingCoverage">
+          <th mat-header-cell *matHeaderCellDef>Remaining Coverage</th>
+          <td mat-cell *matCellDef="let policy">{{policy.remainingCoverage | currency:'INR':'symbol':'1.0-0'}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
+          <td mat-cell *matCellDef="let policy">
+            <mat-chip [color]="getStatusColor(policy.status)">
+              {{getStatusText(policy.status)}}
+            </mat-chip>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <td mat-cell *matCellDef="let policy">
+            <!-- Policy Holder actions -->
+            <ng-container *ngIf="!isAdmin() && !isAgent()">
+              <button mat-icon-button 
+                      (click)="viewPolicy(policy)"
+                      matTooltip="View Policy Details">
+                <mat-icon>visibility</mat-icon>
+              </button>
+              <button mat-icon-button color="primary"
+                      *ngIf="policy.status === PolicyStatus.Active"
+                      (click)="payPremium(policy)"
+                      matTooltip="Pay Premium">
+                <mat-icon>payment</mat-icon>
+              </button>
+            </ng-container>
+            
+            <!-- Admin/Agent actions -->
+            <ng-container *ngIf="isAdmin() || isAgent()">
+              <button mat-icon-button *ngIf="canRenewPolicy(policy)" 
+                      (click)="renewPolicy(policy)"
+                      matTooltip="Renew Policy">
+                <mat-icon>refresh</mat-icon>
+              </button>
+              <button mat-icon-button *ngIf="canEditPolicy()" 
+                      (click)="editPolicy(policy)"
+                      matTooltip="Edit Policy">
+                <mat-icon>edit</mat-icon>
+              </button>
+            </ng-container>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+
+      <div class="empty-state" *ngIf="filteredPolicies.length === 0">
+        <mat-icon>policy</mat-icon>
+        <p>No policies found</p>
+      </div>
+    </div>
+
+    <mat-paginator 
+      *ngIf="isAdmin() || isAgent()"
+      [length]="filteredPolicies.length"
+      [pageSize]="pageSize"
+      [pageSizeOptions]="[5, 10, 25, 50, 100]"
+      [pageIndex]="pageIndex"
+      (page)="onPageChange($event)"
+      showFirstLastButtons>
+    </mat-paginator>
+  </mat-card-content>
+</mat-card>

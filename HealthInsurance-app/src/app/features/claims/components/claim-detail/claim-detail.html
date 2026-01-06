@@ -1,0 +1,163 @@
+<div class="claim-detail-container" *ngIf="claim">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>
+        <div class="header-content">
+          <span>Claim Details</span>
+          <mat-chip [ngClass]="getStatusClass(claim.status)">
+            {{claim.status}}
+          </mat-chip>
+        </div>
+      </mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      <div class="detail-section">
+        <h3>Claim Information</h3>
+        <div class="detail-grid">
+          <div class="detail-item">
+            <label>Claim Number:</label>
+            <span class="value">{{claim.claimNumber}}</span>
+          </div>
+          <div class="detail-item">
+            <label>Policy Number:</label>
+            <span class="value">{{claim.policyNumber}}</span>
+          </div>
+          <div class="detail-item">
+            <label>Hospital:</label>
+            <span class="value">{{claim.hospitalName}}</span>
+          </div>
+          <div class="detail-item">
+            <label>Policy Holder:</label>
+            <span class="value">{{claim.userName}}</span>
+          </div>
+        </div>
+      </div>
+
+      <mat-divider></mat-divider>
+
+      <div class="detail-section">
+        <h3>Financial Details</h3>
+        <div class="detail-grid">
+          <div class="detail-item">
+            <label>Claim Amount:</label>
+            <span class="value">₹{{claim.claimAmount | number:'1.0-0'}}</span>
+          </div>
+          <div class="detail-item" *ngIf="claim.approvedAmount">
+            <label>Approved Amount:</label>
+            <span class="value">₹{{claim.approvedAmount | number:'1.0-0'}}</span>
+          </div>
+        </div>
+      </div>
+
+      <mat-divider></mat-divider>
+
+      <div class="detail-section">
+        <h3>Submission Information</h3>
+        <div class="detail-grid">
+          <div class="detail-item">
+            <label>Submitted At:</label>
+            <span class="value">{{claim.submittedAt | date:'dd/MM/yy'}}</span>
+          </div>
+        </div>
+        <div class="detail-item full-width" *ngIf="claim.medicalNotes">
+          <label>Medical Notes:</label>
+          <span class="value">{{claim.medicalNotes}}</span>
+        </div>
+        <div class="detail-item full-width" *ngIf="claim.notes">
+          <label>Additional Notes:</label>
+          <span class="value">{{claim.notes}}</span>
+        </div>
+      </div>
+
+      <mat-divider *ngIf="claim.rejectionReason || claim.reviewerName || claim.reviewedAt"></mat-divider>
+
+      <div class="detail-section" *ngIf="claim.rejectionReason || claim.reviewerName || claim.reviewedAt">
+        <h3>Review Information</h3>
+        <div class="detail-grid">
+          <div class="detail-item" *ngIf="claim.reviewerName">
+            <label>Reviewed By:</label>
+            <span class="value">{{claim.reviewerName}}</span>
+          </div>
+          <div class="detail-item" *ngIf="claim.reviewedAt">
+            <label>Review Date:</label>
+            <span class="value">{{claim.reviewedAt | date:'dd/MM/yy'}}</span>
+          </div>
+        </div>
+        <div class="detail-item full-width" *ngIf="claim.rejectionReason">
+          <label>Rejection Reason:</label>
+          <span class="value">{{claim.rejectionReason}}</span>
+        </div>
+      </div>
+
+      <!-- Review Form for Claims Officers -->
+      <div class="review-section" *ngIf="canReview() && showReviewForm">
+        <mat-divider></mat-divider>
+        <h3>Review Claim</h3>
+        <form [formGroup]="reviewForm" (ngSubmit)="submitReview()">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Decision</mat-label>
+            <mat-select formControlName="status" required>
+              <mat-option [value]="ClaimStatus.InReview">Mark as In Review</mat-option>
+              <mat-option [value]="ClaimStatus.Approved">Approve</mat-option>
+              <mat-option [value]="ClaimStatus.Rejected">Reject</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Approved Amount</mat-label>
+            <input matInput type="number" formControlName="approvedAmount">
+            <mat-hint>Leave empty to approve full claim amount</mat-hint>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Rejection Reason</mat-label>
+            <textarea matInput formControlName="rejectionReason" rows="4"></textarea>
+            <mat-hint>Required if rejecting the claim</mat-hint>
+          </mat-form-field>
+
+          <div class="form-actions">
+            <button mat-button type="button" (click)="cancelReview()">Cancel</button>
+            <button mat-raised-button color="primary" type="submit" 
+                    [disabled]="reviewForm.invalid || isSubmitting">
+              {{isSubmitting ? 'Submitting...' : 'Submit Review'}}
+            </button>
+          </div>
+        </form>
+      </div>
+    </mat-card-content>
+
+    <mat-card-actions>
+      <button mat-button (click)="goBack()">
+        <mat-icon>arrow_back</mat-icon>
+        Back
+      </button>
+      <button mat-raised-button color="primary" 
+              *ngIf="canReview() && !showReviewForm" 
+              (click)="startReview()">
+        <mat-icon>rate_review</mat-icon>
+        Review Claim
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</div>
+
+<div class="loading-container" *ngIf="isLoading">
+  <mat-card>
+    <mat-card-content style="text-align: center; padding: 40px;">
+      <div style="margin-bottom: 16px;">
+        <mat-icon style="font-size: 48px; height: 48px; width: 48px; animation: spin 1s linear infinite;">refresh</mat-icon>
+      </div>
+      <p>Loading claim details...</p>
+    </mat-card-content>
+  </mat-card>
+</div>
+
+<div class="error-container" *ngIf="error">
+  <mat-card>
+    <mat-card-content>
+      <p>{{error}}</p>
+      <button mat-raised-button color="primary" (click)="goBack()">Go Back</button>
+    </mat-card-content>
+  </mat-card>
+</div>

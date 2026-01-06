@@ -1,0 +1,60 @@
+<mat-toolbar color="primary" class="header-toolbar">
+  <div class="toolbar-container">
+    <!-- Logo and Brand -->
+    <div class="brand-section">
+      <div class="logo-container" [routerLink]="currentUser ? '/dashboard' : '/'">
+        <mat-icon class="logo-icon">health_and_safety</mat-icon>
+        <span class="brand-name">Health Insurance</span>
+      </div>
+    </div>
+
+    <!-- Right Section -->
+    <div class="right-section" *ngIf="currentUser">
+      <!-- Notifications -->
+      <div class="notification-container">
+        <app-notification-bell 
+          (bellClicked)="toggleNotificationDropdown()">
+        </app-notification-bell>
+        
+        <!-- Notification Dropdown Overlay -->
+        <div class="notification-dropdown-overlay" 
+             *ngIf="showNotificationDropdown"
+             (click)="closeNotificationDropdown()">
+        </div>
+        <div class="notification-dropdown-container" 
+             *ngIf="showNotificationDropdown"
+             (click)="$event.stopPropagation()">
+          <app-notification-dropdown 
+            (closeDropdown)="closeNotificationDropdown()">
+          </app-notification-dropdown>
+        </div>
+      </div>
+
+      <!-- User Info Display -->
+      <div class="user-info-display">
+        <div class="user-avatar">
+          <mat-icon>account_circle</mat-icon>
+        </div>
+        <div class="user-info">
+          <span class="user-name">{{currentUser.firstName}} {{currentUser.lastName}}</span>
+          <span class="user-role">{{getRoleDisplayText(currentUser.role)}}</span>
+        </div>
+      </div>
+
+      <!-- Logout Button -->
+      <button mat-icon-button class="logout-button" matTooltip="Logout" (click)="logout()">
+        <mat-icon>logout</mat-icon>
+      </button>
+    </div>
+
+    <!-- Login/Register for non-authenticated users -->
+    <div class="auth-buttons" *ngIf="!currentUser">
+      <button mat-button routerLink="/login">
+        Login
+      </button>
+      <button mat-raised-button color="accent" routerLink="/register">
+        Register
+      </button>
+    </div>
+  </div>
+</mat-toolbar>

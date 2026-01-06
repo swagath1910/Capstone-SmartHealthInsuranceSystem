@@ -1,0 +1,157 @@
+<div class="dashboard-container">
+  <div class="dashboard-cards">
+    <mat-card class="dashboard-card">
+      <mat-card-header>
+        <mat-card-title>Quick Stats</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="stats-grid">
+          <div class="stat-item" *ngIf="currentUser?.role === 2 || currentUser?.role === 5">
+            <mat-icon>policy</mat-icon>
+            <div class="stat-info">
+              <h3>Active Policies</h3>
+              <p>{{stats.activePolicies}}</p>
+            </div>
+          </div>
+          <div class="stat-item" *ngIf="currentUser?.role === 3">
+            <mat-icon>assignment</mat-icon>
+            <div class="stat-info">
+              <h3>Total Claims</h3>
+              <p>{{stats.totalClaims}}</p>
+            </div>
+          </div>
+          <div class="stat-item" *ngIf="currentUser?.role === 3">
+            <mat-icon>hourglass_empty</mat-icon>
+            <div class="stat-info">
+              <h3>Pending Claims</h3>
+              <p>{{stats.pendingClaims}}</p>
+            </div>
+          </div>
+          <div class="stat-item" *ngIf="currentUser?.role === 3">
+            <mat-icon>check_circle</mat-icon>
+            <div class="stat-info">
+              <h3>Approved Claims</h3>
+              <p>{{stats.approvedClaims}}</p>
+            </div>
+          </div>
+          <div class="stat-item" *ngIf="currentUser?.role === 3">
+            <mat-icon>rate_review</mat-icon>
+            <div class="stat-info">
+              <h3>In Review</h3>
+              <p>{{stats.inReviewClaims}}</p>
+            </div>
+          </div>
+          <div class="stat-item" *ngIf="currentUser?.role === 3">
+            <mat-icon>payment</mat-icon>
+            <div class="stat-info">
+              <h3>Paid Claims</h3>
+              <p>{{stats.paidClaims}}</p>
+            </div>
+          </div>
+          <div class="stat-item" *ngIf="currentUser?.role === 5">
+            <mat-icon>assignment</mat-icon>
+            <div class="stat-info">
+              <h3>Total Claims</h3>
+              <p>{{stats.totalClaims}}</p>
+            </div>
+          </div>
+          <div class="stat-item" *ngIf="currentUser?.role === 5">
+            <mat-icon>hourglass_empty</mat-icon>
+            <div class="stat-info">
+              <h3>Pending Claims</h3>
+              <p>{{stats.pendingClaims}}</p>
+            </div>
+          </div>
+          <div class="stat-item" *ngIf="currentUser?.role === 4">
+            <mat-icon>hourglass_empty</mat-icon>
+            <div class="stat-info">
+              <h3>Pending Claims</h3>
+              <p>{{stats.pendingClaims}}</p>
+            </div>
+          </div>
+          <div class="stat-item" *ngIf="currentUser?.role === 2">
+            <mat-icon>description</mat-icon>
+            <div class="stat-info">
+              <h3>Total Policies</h3>
+              <p>{{stats.totalPolicies}}</p>
+            </div>
+          </div>
+          <div class="stat-item" *ngIf="currentUser?.role === 2">
+            <mat-icon>people</mat-icon>
+            <div class="stat-info">
+              <h3>Policy Holders</h3>
+              <p>{{stats.totalPolicyHolders}}</p>
+            </div>
+          </div>
+          <div class="stat-item" *ngIf="currentUser?.role === 1">
+            <mat-icon>people</mat-icon>
+            <div class="stat-info">
+              <h3>Total Users</h3>
+              <p>{{stats.totalUsers}}</p>
+            </div>
+          </div>
+          <div class="stat-item" *ngIf="currentUser?.role === 1">
+            <mat-icon>local_hospital</mat-icon>
+            <div class="stat-info">
+              <h3>Total Hospitals</h3>
+              <p>{{stats.totalHospitals}}</p>
+            </div>
+          </div>
+
+          <div class="stat-item" *ngIf="currentUser?.role === 1">
+            <mat-icon>medical_services</mat-icon>
+            <div class="stat-info">
+              <h3>Insurance Plans</h3>
+              <p>{{stats.totalInsurancePlans}}</p>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="dashboard-card" *ngIf="currentUser?.role === 1">
+      <mat-card-header>
+        <mat-card-title>User Distribution by Role</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="stats-grid">
+          <div class="stat-item">
+            <mat-icon>admin_panel_settings</mat-icon>
+            <div class="stat-info">
+              <h3>Admins</h3>
+              <p>{{stats.adminCount}}</p>
+            </div>
+          </div>
+          <div class="stat-item">
+            <mat-icon>support_agent</mat-icon>
+            <div class="stat-info">
+              <h3>Insurance Agents</h3>
+              <p>{{stats.agentCount}}</p>
+            </div>
+          </div>
+          <div class="stat-item">
+            <mat-icon>gavel</mat-icon>
+            <div class="stat-info">
+              <h3>Claims Officers</h3>
+              <p>{{stats.claimsOfficerCount}}</p>
+            </div>
+          </div>
+          <div class="stat-item">
+            <mat-icon>local_hospital</mat-icon>
+            <div class="stat-info">
+              <h3>Hospital Staff</h3>
+              <p>{{stats.hospitalStaffCount}}</p>
+            </div>
+          </div>
+          <div class="stat-item">
+            <mat-icon>person</mat-icon>
+            <div class="stat-info">
+              <h3>Policy Holders</h3>
+              <p>{{stats.policyHolderCount}}</p>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

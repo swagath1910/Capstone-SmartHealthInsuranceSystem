@@ -1,0 +1,53 @@
+<mat-card class="notification-dropdown">
+  <mat-card-header>
+    <mat-card-title>Notifications</mat-card-title>
+    <button 
+      mat-icon-button 
+      (click)="closeDropdown.emit()"
+      aria-label="Close notifications">
+      <mat-icon>close</mat-icon>
+    </button>
+  </mat-card-header>
+
+  <mat-card-content>
+    <div *ngIf="loading" class="loading-container">
+      <mat-spinner diameter="40"></mat-spinner>
+    </div>
+
+    <div *ngIf="!loading && notifications.length === 0" class="empty-state">
+      <mat-icon>notifications_none</mat-icon>
+      <p>No notifications</p>
+    </div>
+
+    <mat-list *ngIf="!loading && notifications.length > 0">
+      <mat-list-item 
+        *ngFor="let notification of notifications; let last = last"
+        (click)="onNotificationClick(notification)"
+        [class.unread]="!notification.isRead"
+        class="notification-item">
+        <mat-icon 
+          matListItemIcon 
+          [color]="getNotificationIconColor(notification.type)">
+          {{ getNotificationIcon(notification.type) }}
+        </mat-icon>
+        <div matListItemTitle class="notification-title">
+          {{ notification.title }}
+          <span *ngIf="!notification.isRead" class="unread-dot"></span>
+        </div>
+        <div matListItemLine class="notification-message">
+          {{ notification.message }}
+        </div>
+        <mat-divider *ngIf="!last"></mat-divider>
+      </mat-list-item>
+    </mat-list>
+  </mat-card-content>
+
+  <mat-card-actions *ngIf="notifications.length > 0">
+    <button mat-button (click)="markAllAsRead()" color="primary">
+      Mark all as read
+    </button>
+    <button mat-button (click)="viewAllNotifications()" color="primary">
+      View All
+    </button>
+  </mat-card-actions>
+</mat-card>

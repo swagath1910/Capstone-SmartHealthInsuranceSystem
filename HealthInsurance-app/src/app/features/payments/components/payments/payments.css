@@ -1,0 +1,32 @@
+.table-container {
+  overflow-x: auto;
+  margin-top: 16px;
+}
+
+.payments-table {
+  width: 100%;
+}
+
+mat-card-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mat-column-actions {
+  width: 150px;
+  text-align: center;
+}
+
+.mat-column-status {
+  width: 120px;
+  text-align: center;
+}
+
+.mat-column-premiumAmount {
+  text-align: right;
+}
+
+.mat-column-dueDate {
+  width: 120px;
+}

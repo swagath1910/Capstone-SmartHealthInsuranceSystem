@@ -1,0 +1,5 @@
+<app-header *ngIf="showHeader"></app-header>
+<app-sidebar *ngIf="showSidebar"></app-sidebar>
+<div class="main-content" [class.no-header]="!showHeader" [class.with-sidebar]="showSidebar">
+  <router-outlet></router-outlet>
+</div>

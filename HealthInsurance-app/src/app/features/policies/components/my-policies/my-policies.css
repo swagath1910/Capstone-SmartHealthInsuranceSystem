@@ -1,0 +1,47 @@
+.table-container {
+  overflow-x: auto;
+  margin-top: 16px;
+}
+
+.policies-table {
+  width: 100%;
+}
+
+mat-card-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mat-column-actions {
+  width: 200px;
+  text-align: center;
+}
+
+.mat-column-status {
+  width: 100px;
+}
+
+.mat-column-premiumPaid {
+  text-align: right;
+}
+
+.mat-column-remainingCoverage {
+  width: 180px;
+}
+
+.coverage-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.coverage-amount {
+  font-weight: 500;
+  font-size: 14px;
+}
+
+mat-progress-bar {
+  height: 6px;
+  border-radius: 3px;
+}
