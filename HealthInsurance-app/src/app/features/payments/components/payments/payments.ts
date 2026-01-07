@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
@@ -26,7 +26,8 @@ import { PaymentDialogComponent } from '../payment-dialog/payment-dialog';
     MatSnackBarModule
   ],
   templateUrl: './payments.html',
-  styleUrls: ['./payments.css']
+  styleUrls: ['./payments.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PaymentsComponent implements OnInit {
   policies: Policy[] = [];
@@ -44,7 +45,9 @@ export class PaymentsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.loadData();
+    setTimeout(() => {
+      this.loadData();
+    });
   }
 
   loadData(): void {
@@ -52,6 +55,7 @@ export class PaymentsComponent implements OnInit {
     this.policyService.getMyPolicies().subscribe({
       next: (policies) => {
         this.policies = policies.filter(p => p.status === PolicyStatus.Active);
+        this.cdr.detectChanges();
         this.loadPayments();
       },
       error: (error) => {
@@ -71,7 +75,7 @@ export class PaymentsComponent implements OnInit {
         thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
         
         // Clear existing paid policies
-        this.paidPolicies.clear();
+        const newPaidPolicies = new Set<number>();
         
         payments.forEach(payment => {
           const paymentDate = new Date(payment.paymentDate);
@@ -80,10 +84,11 @@ export class PaymentsComponent implements OnInit {
           // Check if payment is completed (enum value is 2)
           if (payment.policyId && paymentDate >= thirtyDaysAgo && payment.status === PaymentStatus.Completed) {
             console.log(`Marking policy ${payment.policyId} as paid`);
-            this.paidPolicies.add(payment.policyId);
+            newPaidPolicies.add(payment.policyId);
           }
         });
         
+        this.paidPolicies = newPaidPolicies;
         console.log('Paid policies:', Array.from(this.paidPolicies));
         this.cdr.detectChanges();
       },

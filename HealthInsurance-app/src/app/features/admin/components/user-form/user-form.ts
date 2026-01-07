@@ -175,10 +175,17 @@ export class UserFormComponent implements OnInit {
           console.error('Error saving user:', error);
           console.error('Error details:', error.error);
           console.error('Error status:', error.status);
-          const errorMessage = error.error?.message || error.error?.errors 
-            ? Object.values(error.error.errors).flat().join(', ')
-            : `Failed to ${this.isEditMode ? 'update' : 'create'} user`;
-          this.snackBar.open(errorMessage, 'Close', { duration: 3000 });
+          
+          let errorMessage = `Failed to ${this.isEditMode ? 'update' : 'create'} user`;
+          
+          if (error.error?.message) {
+            errorMessage = error.error.message;
+          } else if (error.error?.errors && typeof error.error.errors === 'object') {
+            const errorValues = Object.values(error.error.errors).flat();
+            errorMessage = errorValues.join(', ');
+          }
+          
+          this.snackBar.open(errorMessage, 'Close', { duration: 5000 });
           // Use setTimeout to avoid NG0100 error
           setTimeout(() => {
             this.isSubmitting = false;

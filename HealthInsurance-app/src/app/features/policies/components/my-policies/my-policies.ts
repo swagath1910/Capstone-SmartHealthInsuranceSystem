@@ -135,7 +135,20 @@ export class MyPoliciesComponent implements OnInit {
       },
       error: (error) => {
         this.processingPayment.delete(policy.policyId);
-        const errorMessage = error.error?.message || 'Payment failed. Please try again.';
+        let errorMessage = 'Payment failed. Please try again.';
+        
+        if (error.status === 400 && error.error) {
+          // Handle specific backend validation errors
+          if (typeof error.error === 'string') {
+            errorMessage = error.error;
+          } else if (error.error.message) {
+            errorMessage = error.error.message;
+          } else if (error.error.errors) {
+            // Handle validation errors array
+            errorMessage = Object.values(error.error.errors).flat().join(', ');
+          }
+        }
+        
         this.snackBar.open(errorMessage, 'Close', { 
           duration: 5000,
           panelClass: ['error-snackbar']

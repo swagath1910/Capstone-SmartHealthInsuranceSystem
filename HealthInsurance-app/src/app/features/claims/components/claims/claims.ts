@@ -304,6 +304,7 @@ export class ClaimsComponent implements OnInit {
   processClaimPayment(claim: Claim): void {
     // Add to processing set
     this.processingPayments.add(claim.claimId);
+    this.cdr.detectChanges();
 
     this.claimService.markAsPaid(claim.claimId).subscribe({
       next: (updated) => {
@@ -316,11 +317,13 @@ export class ClaimsComponent implements OnInit {
         }
         // Remove from processing set
         this.processingPayments.delete(claim.claimId);
+        this.cdr.detectChanges();
       },
       error: (error) => {
         this.snackBar.open('Failed to mark claim as paid', 'Close', { duration: 3000 });
         // Remove from processing set on error
         this.processingPayments.delete(claim.claimId);
+        this.cdr.detectChanges();
       }
     });
   }

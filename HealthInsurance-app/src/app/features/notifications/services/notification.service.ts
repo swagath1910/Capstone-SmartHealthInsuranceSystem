@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, BehaviorSubject, interval } from 'rxjs';
-import { map, tap, switchMap } from 'rxjs/operators';
+import { Observable, BehaviorSubject, interval, Subscription, EMPTY } from 'rxjs';
+import { map, tap, switchMap, takeWhile } from 'rxjs/operators';
 import { Notification, NotificationResponse } from '../models/model-notification';
+import { AuthService } from '../../../core/authentication/services/auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -16,10 +17,24 @@ export class NotificationService {
   public notifications$ = this.notificationsSubject.asObservable();
 
   private pollingInterval = 30000; // 30 seconds
+  private pollingSubscription?: Subscription;
+  private countPollingSubscription?: Subscription;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private authService: AuthService) {
+    // Listen to auth state changes
+    this.authService.currentUser$.subscribe(user => {
+      if (!user) {
+        this.stopPolling();
+        this.clearNotifications();
+      }
+    });
+  }
 
   getMyNotifications(): Observable<Notification[]> {
+    if (!this.authService.isAuthenticated()) {
+      return EMPTY;
+    }
+    
     return this.http.get<NotificationResponse[]>(`${this.apiUrl}/my-notifications`).pipe(
       map(notifications => notifications.map(n => ({
         ...n,
@@ -49,6 +64,10 @@ export class NotificationService {
   }
 
   getUnreadCount(): Observable<number> {
+    if (!this.authService.isAuthenticated()) {
+      return EMPTY;
+    }
+    
     return this.http.get<number>(`${this.apiUrl}/unread-count`).pipe(
       tap(count => this.unreadCountSubject.next(count))
     );
@@ -81,23 +100,50 @@ export class NotificationService {
   }
 
   startPolling(): void {
+    if (!this.authService.isAuthenticated()) {
+      return;
+    }
+    
+    // Stop any existing polling
+    this.stopPolling();
+    
     // Initial load
     this.getMyNotifications().subscribe();
     this.getUnreadCount().subscribe();
 
     // Poll every 30 seconds - fetch both notifications and count
-    interval(this.pollingInterval).pipe(
+    this.pollingSubscription = interval(this.pollingInterval).pipe(
+      takeWhile(() => this.authService.isAuthenticated()),
       switchMap(() => this.getMyNotifications())
     ).subscribe();
     
     // Also poll unread count separately for redundancy
-    interval(this.pollingInterval).pipe(
+    this.countPollingSubscription = interval(this.pollingInterval).pipe(
+      takeWhile(() => this.authService.isAuthenticated()),
       switchMap(() => this.getUnreadCount())
     ).subscribe();
   }
 
+  stopPolling(): void {
+    if (this.pollingSubscription) {
+      this.pollingSubscription.unsubscribe();
+      this.pollingSubscription = undefined;
+    }
+    if (this.countPollingSubscription) {
+      this.countPollingSubscription.unsubscribe();
+      this.countPollingSubscription = undefined;
+    }
+  }
+
+  clearNotifications(): void {
+    this.notificationsSubject.next([]);
+    this.unreadCountSubject.next(0);
+  }
+
   refreshNotifications(): void {
-    this.getMyNotifications().subscribe();
+    if (this.authService.isAuthenticated()) {
+      this.getMyNotifications().subscribe();
+    }
   }
 
   deleteNotificationsByPolicy(policyId: number): Observable<void> {
